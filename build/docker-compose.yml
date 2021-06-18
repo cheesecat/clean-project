@@ -1,0 +1,45 @@
+version: "3.2"
+services:
+  php:
+    build: './php/'
+    container_name: napoleon_php_admin
+    volumes:
+      - ${PATH_WEB}:/var/www/:cached
+    environment:
+      HOST_IP: ${DOCKER_GATEWAY_HOST:-host.docker.internal}
+
+  apache:
+    build: './apache/'
+    container_name: napoleon_www_admin
+    depends_on:
+      - php
+    ports:
+      - "443:443"
+    volumes:
+      - ${PATH_WEB}:/var/www/:cached
+  memcached:
+    container_name: memcached_admin
+    image: memcached:latest
+    ports:
+      - "11211:11211"
+  db:
+    build: './mysql/'
+    container_name: napoleon_db_admin
+    volumes:
+      - ./docker/mysql/dump.sql:/docker-entrypoint-initdb.d/1.sql
+      - ${PATH_WEB}/docker/mysql/db_data:/var/lib/mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: dupa.8
+      MYSQL_DATABASE: new-superadmin
+      MYSQL_USER: root
+      MYSQL_PASSWORD: dupa.8
+
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.17.0.0/16

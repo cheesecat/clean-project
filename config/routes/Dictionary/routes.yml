@@ -1,0 +1,6 @@
+dictionary.get:
+  path: /get/{name}
+  controller: Napoleon\UI\Rest\DictionaryController::getDictionary
+soap.dictionary:
+  path: /webservice
+  controller: Napoleon\UI\Soap\DictionaryController::index

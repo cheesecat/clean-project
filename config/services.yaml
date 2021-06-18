@@ -1,0 +1,28 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: false      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: false
+
+    Asr\Infrastructure\Dictionary\DictionaryDbRepository:
+        arguments: ['@doctrine.orm.default_entity_manager']
+        public: false
+
+    Asr\DomainModel\Dictionary\DictionaryService:
+        arguments: ['@Napoleon\Infrastructure\Dictionary\DictionaryDbRepository']
+        public: false
+
+    Asr\Application\Dictionary\DictionaryAppService:
+        arguments: ['@Napoleon\DomainModel\Dictionary\DictionaryService']
+        public: true
+
+    DataFixtures\:
+        resource: '../Db/DataFixtures/*'

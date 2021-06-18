@@ -1,0 +1,4 @@
+dictionary:
+    resource: 'routes/Dictionary/'
+    type: directory
+    prefix: '/dictionary'
